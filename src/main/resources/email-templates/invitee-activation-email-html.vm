@@ -1,0 +1,17 @@
+#macro (msg $msgCode $args)$localeSource.getMessage($msgCode, $args)#end
+<html>
+<head>
+    <style>
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+            }
+        </style>
+</head>
+<body>
+    <p>#msg("email.activation.invitee.greeting", [$name])</p>
+    <p>#msg("email.activation.invitee.header", [$title])</p>
+    <p>#msg("email.activation.invitee.url.html", [$url, $token])</p>
+    <p>#msg("email.activation.invitee.thanks")<br/>$title</p>
+</body>
+</html>

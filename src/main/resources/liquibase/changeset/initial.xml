@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2016  Christopher R. Fitzpatrick
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <!-- EVENT CONFIGS -->
+    <changeSet id="1" author="cfitzpatrick">
+
+        <createTable tableName="event_configs">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="config_key" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="display_type" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME"/>
+        </createTable>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.date</column>
+            <column name="display_type">input</column>
+            <column name="value">12/31/2999</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.time</column>
+            <column name="display_type">input</column>
+            <column name="value">12:00PM</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.title</column>
+            <column name="display_type">input</column>
+            <column name="value">My Wedding</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.address.ceremony</column>
+            <column name="display_type">input</column>
+            <column name="value">1234 Main Street, Anytown, USA</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.address.reception</column>
+            <column name="display_type">input</column>
+            <column name="value">1234 Main Street, Anytown, USA</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.dress.code</column>
+            <column name="display_type">input</column>
+            <column name="value">Formal</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.url</column>
+            <column name="display_type">input</column>
+            <column name="value">https://localhost</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.email</column>
+            <column name="display_type">input</column>
+            <column name="value">admin@localhost</column>
+        </insert>
+
+        <insert tableName="event_configs">
+            <column name="config_key">event.description</column>
+            <column name="display_type">textarea</column>
+            <column name="value">This is the main text that the invitation will contain.</column>
+        </insert>
+
+    </changeSet>
+
+    <!-- ACCOUNT -->
+    <changeSet id="2" author="cfitzpatrick">
+        <createTable tableName="accounts">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type" type="varchar(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activated" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="datetime" defaultValue="NOW()">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <insert tableName="accounts">
+            <column name="id">1</column>
+            <column name="first_name">First</column>
+            <column name="last_name">Last</column>
+            <column name="email">admin</column>
+            <column name="password">$2a$10$6AQBS27pplv./UdHZujMOuOMLrjiXWk5tzSAa4PcyF3K261y7Hsja</column>
+            <column name="account_type">ADMIN</column>
+            <column name="activated">1</column>
+        </insert>
+
+        <insert tableName="accounts">
+            <column name="id">2</column>
+            <column name="first_name">John</column>
+            <column name="last_name">Smith</column>
+            <column name="email">invitee</column>
+            <column name="password">$2a$10$6AQBS27pplv./UdHZujMOuOMLrjiXWk5tzSAa4PcyF3K261y7Hsja</column>
+            <column name="account_type">INVITEE</column>
+            <column name="activated">1</column>
+        </insert>
+    </changeSet>
+
+    <!-- ACTIVATION -->
+
+    <changeSet id="3" author="cfitzpatrick">
+        <createTable tableName="activations">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account" type="int">
+                <constraints nullable="true" foreignKeyName="fk_activation_accounts" deleteCascade="true" references="accounts(id)"/>
+            </column>
+            <column name="last_updated" type="datetime" defaultValue="NOW()">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- DINING OPTIONS -->
+    <changeSet id="4" author="cfitzpatrick">
+        <createTable tableName="meal_options">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <insert tableName="meal_options">
+            <column name="id">1</column>
+            <column name="name">NY Strip Steak</column>
+            <column name="description">A 10oz medium-rare steak served with mashed potatoes.</column>
+        </insert>
+
+        <insert tableName="meal_options">
+            <column name="id">2</column>
+            <column name="name">Salmon</column>
+            <column name="description">Grilled salmon served with rice pilaf.</column>
+        </insert>
+    </changeSet>
+
+    <!-- INVITATION -->
+    <changeSet id="5" author="cfitzpatrick">
+        <createTable tableName="invitations">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account" type="int">
+                <constraints nullable="true" foreignKeyName="fk_invitation_accounts" deleteCascade="true" references="accounts(id)"/>
+            </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <insert tableName="invitations">
+            <column name="name">The Smith Family</column>
+            <column name="address">1234 Main St, Anytown, USA</column>
+            <column name="account">2</column>
+            <column name="code">pS3gtw</column>
+        </insert>
+    </changeSet>
+
+    <!-- ATTENDANTS -->
+    <changeSet id="6" author="cfitzpatrick">
+        <createTable tableName="attendants">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_attending" type="tinyint(1)" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dining_option" type="int">
+                <constraints nullable="true" foreignKeyName="fk_attendants_meal_options" deleteCascade="true" references="meal_options(id)"/>
+            </column>
+            <column name="response_status" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invitation" type="int">
+                <constraints nullable="true" foreignKeyName="fk_attendants_invitations" deleteCascade="true" references="invitations(id)"/>
+            </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <insert tableName="attendants">
+            <column name="name">Jane Smith</column>
+            <column name="dining_option">1</column>
+            <column name="invitation">1</column>
+            <column name="response_status">ACCEPTED</column>
+        </insert>
+
+        <insert tableName="attendants">
+            <column name="name">John Smith</column>
+            <column name="invitation">1</column>
+            <column name="response_status">PENDING</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

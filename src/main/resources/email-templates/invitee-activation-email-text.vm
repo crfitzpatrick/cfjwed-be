@@ -1,0 +1,10 @@
+#macro (msg $msgCode $args)$localeSource.getMessage($msgCode, $args)#end
+#macro (eol)#end
+#msg("email.activation.invitee.greeting", [$name])#eol
+
+#msg("email.activation.invitee.header", [$title])#eol
+
+#msg("email.activation.invitee.url.text", [$url, $token])#eol
+
+#msg("email.activation.invitee.thanks")#eol
+$title
