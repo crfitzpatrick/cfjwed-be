@@ -24,11 +24,11 @@
 
 package com.cfitzarl.cjfwed.controller;
 
-import com.cfitzarl.cjfwed.data.dao.ConfigDao;
 import com.cfitzarl.cjfwed.data.dto.ConfigDTO;
 import com.cfitzarl.cjfwed.data.dto.ValidList;
 import com.cfitzarl.cjfwed.data.model.Config;
 
+import com.cfitzarl.cjfwed.service.ConfigurationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,7 +51,7 @@ public class ConfigurationController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private ConfigDao configDao;
+    private ConfigurationService configurationService;
 
     /**
      * This returns a list of configuration data in the form of a list of {@link ConfigDTO}s. These data are
@@ -64,7 +64,7 @@ public class ConfigurationController {
     public List<ConfigDTO> provideSettings() {
         List<ConfigDTO> configs = new ArrayList<>();
 
-        for (Config config : configDao.findAll()) {
+        for (Config config : configurationService.find()) {
             configs.add(modelMapper.map(config, ConfigDTO.class));
         }
 
@@ -80,7 +80,7 @@ public class ConfigurationController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void processConfig(@Valid @RequestBody ValidList<ConfigDTO> configs) {
         for (ConfigDTO configDto : configs.getList()) {
-            configDao.save(modelMapper.map(configDto, Config.class));
+            configurationService.save(modelMapper.map(configDto, Config.class));
         }
     }
 }

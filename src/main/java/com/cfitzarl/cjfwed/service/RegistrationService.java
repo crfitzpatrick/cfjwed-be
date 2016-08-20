@@ -25,6 +25,7 @@
 package com.cfitzarl.cjfwed.service;
 
 import com.cfitzarl.cjfwed.data.dao.ConfigDao;
+import com.cfitzarl.cjfwed.data.enums.ConfigKey;
 import com.cfitzarl.cjfwed.data.model.Account;
 import com.cfitzarl.cjfwed.data.model.Activation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,8 @@ public abstract class RegistrationService {
      */
     protected Map<String, Object> getCommonEmailAttrs(String activationToken, Account account) {
         Map<String, Object> attrs = new HashMap<>();
-        attrs.put("title", configDao.findByKey("event.title").getValue());
-        attrs.put("url", configDao.findByKey("event.url").getValue());
+        attrs.put("title", configDao.findByKey(ConfigKey.TITLE).getValue());
+        attrs.put("url", configDao.findByKey(ConfigKey.URL).getValue());
         attrs.put("token", activationToken);
         attrs.put("name", account.getFirstName());
         return attrs;

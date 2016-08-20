@@ -25,6 +25,7 @@
 package com.cfitzarl.cjfwed.service.impl;
 
 import com.cfitzarl.cjfwed.data.dao.ConfigDao;
+import com.cfitzarl.cjfwed.data.enums.ConfigKey;
 import com.cfitzarl.cjfwed.service.EmailDispatchingService;
 import com.cfitzarl.cjfwed.service.LocalizationService;
 import org.apache.velocity.app.VelocityEngine;
@@ -97,8 +98,8 @@ public class EmailDispatchingServiceImpl implements EmailDispatchingService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            String fromEmail = configDao.findByKey("event.email").getValue();
-            String fromTitle = configDao.findByKey("event.title").getValue();
+            String fromEmail = configDao.findByKey(ConfigKey.EMAIL).getValue();
+            String fromTitle = configDao.findByKey(ConfigKey.TITLE).getValue();
 
             String from = String.format("%s <%s>", fromTitle, fromEmail);
 

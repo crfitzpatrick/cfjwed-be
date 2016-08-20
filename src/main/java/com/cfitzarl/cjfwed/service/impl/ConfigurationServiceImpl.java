@@ -22,33 +22,38 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cjfwed.data.model;
+package com.cfitzarl.cjfwed.service.impl;
 
+import com.cfitzarl.cjfwed.data.dao.ConfigDao;
 import com.cfitzarl.cjfwed.data.enums.ConfigKey;
-import lombok.Data;
+import com.cfitzarl.cjfwed.data.model.Config;
+import com.cfitzarl.cjfwed.service.ConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import java.util.List;
 
-@Data
-@Entity
-@Table(name = "event_configs")
-public class Config extends AbstractIdBase {
+@Service
+public class ConfigurationServiceImpl implements ConfigurationService {
 
-    @Column(name = "config_key")
-    @Enumerated(EnumType.STRING)
-    public ConfigKey key;
+    @Autowired
+    private ConfigDao configDao;
 
-    @Column(name = "display_type")
-    public String displayType;
+    /** {@inheritDoc} **/
+    @Override
+    public List<Config> find() {
+        return configDao.findAll();
+    }
 
-    @Column
-    public String value;
+    /** {@inheritDoc} **/
+    @Override
+    public Config findByKey(ConfigKey configKey) {
+        return configDao.findByKey(configKey);
+    }
 
-    private static class ConfigUserType extends org.hibernate.type.EnumType {
-
+    /** {@inheritDoc} **/
+    @Override
+    public Config save(Config config) {
+        return configDao.save(config);
     }
 }

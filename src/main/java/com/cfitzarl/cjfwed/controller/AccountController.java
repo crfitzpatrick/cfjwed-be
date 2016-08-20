@@ -25,8 +25,6 @@
 package com.cfitzarl.cjfwed.controller;
 
 import com.cfitzarl.cjfwed.core.security.SecurityContextWrapper;
-import com.cfitzarl.cjfwed.data.dao.AccountDao;
-import com.cfitzarl.cjfwed.data.dao.InvitationDao;
 import com.cfitzarl.cjfwed.data.dto.AccountDTO;
 import com.cfitzarl.cjfwed.data.model.Account;
 import com.cfitzarl.cjfwed.service.AccountService;
@@ -49,13 +47,7 @@ public class AccountController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private AccountDao accountDao;
-
-    @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private InvitationDao invitationDao;
 
     /**
      * This returns the current account's information.
@@ -65,7 +57,7 @@ public class AccountController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public AccountDTO displayAccountConfigPage() {
         return modelMapper.map(
-            accountDao.findOne(SecurityContextWrapper.getId()),
+            accountService.find(SecurityContextWrapper.getId()),
             AccountDTO.class
         );
     }

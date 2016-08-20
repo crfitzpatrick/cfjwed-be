@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2016  Christopher R. Fitzpatrick
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="7" author="cfitzpatrick">
+        <update tableName="event_configs">
+            <column name="config_key" value="DATE"/>
+            <where>config_key='event.date'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="TIME"/>
+            <where>config_key='event.time'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="TITLE"/>
+            <where>config_key='event.title'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="CEREMONY_ADDRESS"/>
+            <where>config_key='event.address.ceremony'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="RECEPTION_ADDRESS"/>
+            <where>config_key='event.address.reception'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="DRESS_CODE"/>
+            <where>config_key='event.dress.code'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="URL"/>
+            <where>config_key='event.url'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="EMAIL"/>
+            <where>config_key='event.email'</where>
+        </update>
+
+        <update tableName="event_configs">
+            <column name="config_key" value="DESCRIPTION"/>
+            <where>config_key='event.description'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

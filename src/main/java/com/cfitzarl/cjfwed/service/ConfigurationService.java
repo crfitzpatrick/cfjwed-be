@@ -22,33 +22,39 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cjfwed.data.model;
+package com.cfitzarl.cjfwed.service;
 
 import com.cfitzarl.cjfwed.data.enums.ConfigKey;
-import lombok.Data;
+import com.cfitzarl.cjfwed.data.model.Config;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import java.util.List;
 
-@Data
-@Entity
-@Table(name = "event_configs")
-public class Config extends AbstractIdBase {
+/**
+ * This handles configuration-related logic.
+ */
+public interface ConfigurationService {
 
-    @Column(name = "config_key")
-    @Enumerated(EnumType.STRING)
-    public ConfigKey key;
+    /**
+     * Returns all persisted {@link Config}s.
+     *
+     * @return all configs
+     */
+    List<Config> find();
 
-    @Column(name = "display_type")
-    public String displayType;
+    /**
+     * This returns a {@link Config} by its {@link ConfigKey}.
+     *
+     * @param configKey the key
+     * @return the config
+     */
+    Config findByKey(ConfigKey configKey);
 
-    @Column
-    public String value;
+    /**
+     * This saves a {@link Config} entry.
+     *
+     * @param config the config entry to save
+     * @return the saved config entry
+     */
+    Config save(Config config);
 
-    private static class ConfigUserType extends org.hibernate.type.EnumType {
-
-    }
 }

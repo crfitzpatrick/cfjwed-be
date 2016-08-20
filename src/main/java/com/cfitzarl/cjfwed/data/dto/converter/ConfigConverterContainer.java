@@ -24,6 +24,7 @@
 
 package com.cfitzarl.cjfwed.data.dto.converter;
 
+import com.cfitzarl.cjfwed.data.enums.ConfigKey;
 import com.cfitzarl.cjfwed.service.LocalizationService;
 import com.cfitzarl.cjfwed.data.dao.ConfigDao;
 import com.cfitzarl.cjfwed.data.dto.ConfigDTO;
@@ -51,9 +52,9 @@ public class ConfigConverterContainer {
             Config source = mappingContext.getSource();
 
             ConfigDTO dto = new ConfigDTO();
-            dto.setDisplayName(localizationService.getMessage(source.getKey()));
+            dto.setDisplayName(localizationService.getMessage(source.getKey().getTranslationKey()));
             dto.setDisplayType(source.getDisplayType());
-            dto.setKey(source.getKey());
+            dto.setKey(source.getKey().getTranslationKey());
             dto.setValue(source.getValue());
 
             return dto;
@@ -69,7 +70,8 @@ public class ConfigConverterContainer {
         @Override
         public Config convert(MappingContext<ConfigDTO, Config> mappingContext) {
             ConfigDTO source = mappingContext.getSource();
-            Config config = configDao.findByKey(source.getKey());
+            ConfigKey key = ConfigKey.fromTranslationKey(source.getKey());
+            Config config = configDao.findByKey(key);
 
             if (config != null) {
                 if (!config.getValue().equals(source.getValue())) {

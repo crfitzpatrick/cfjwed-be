@@ -22,33 +22,40 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cjfwed.data.model;
+package com.cfitzarl.cjfwed.data.enums;
 
-import com.cfitzarl.cjfwed.data.enums.ConfigKey;
-import lombok.Data;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+public enum ConfigKey {
+    CEREMONY_ADDRESS("event.address.ceremony"),
+    DATE("event.date"),
+    DESCRIPTION("event.description"),
+    DRESS_CODE("event.dress.code"),
+    EMAIL("event.email"),
+    RECEPTION_ADDRESS("event.address.reception"),
+    TIME("event.time"),
+    TITLE("event.title"),
+    URL("event.url");
 
-@Data
-@Entity
-@Table(name = "event_configs")
-public class Config extends AbstractIdBase {
+    private String translationKey;
+    private static Map<String, ConfigKey> LOCALE_MAPPINGS = new HashMap<>();
 
-    @Column(name = "config_key")
-    @Enumerated(EnumType.STRING)
-    public ConfigKey key;
+    static {
+        for (ConfigKey key : values()) {
+            LOCALE_MAPPINGS.put(key.getTranslationKey(), key);
+        }
+    }
 
-    @Column(name = "display_type")
-    public String displayType;
+    public static ConfigKey fromTranslationKey(String key) {
+        return LOCALE_MAPPINGS.get(key);
+    }
 
-    @Column
-    public String value;
+    ConfigKey(String key) {
+        this.translationKey = key;
+    }
 
-    private static class ConfigUserType extends org.hibernate.type.EnumType {
-
+    public String getTranslationKey() {
+        return translationKey;
     }
 }

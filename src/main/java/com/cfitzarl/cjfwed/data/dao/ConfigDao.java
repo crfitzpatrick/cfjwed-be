@@ -24,6 +24,7 @@
 
 package com.cfitzarl.cjfwed.data.dao;
 
+import com.cfitzarl.cjfwed.data.enums.ConfigKey;
 import com.cfitzarl.cjfwed.data.model.Config;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -40,5 +41,5 @@ public interface ConfigDao extends JpaRepository<Config, Long> {
      * @param key the key of the configuration entry
      * @return the configuration if it exists
      */
-    Config findByKey(String key);
+    Config findByKey(ConfigKey key);
 }

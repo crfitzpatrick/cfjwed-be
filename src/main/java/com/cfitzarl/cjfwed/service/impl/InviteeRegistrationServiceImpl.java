@@ -27,6 +27,7 @@ package com.cfitzarl.cjfwed.service.impl;
 import com.cfitzarl.cjfwed.data.dao.ConfigDao;
 import com.cfitzarl.cjfwed.data.dao.InvitationDao;
 import com.cfitzarl.cjfwed.data.enums.AccountType;
+import com.cfitzarl.cjfwed.data.enums.ConfigKey;
 import com.cfitzarl.cjfwed.data.model.Account;
 import com.cfitzarl.cjfwed.data.model.Invitation;
 import com.cfitzarl.cjfwed.exception.BadRequestException;
@@ -79,7 +80,7 @@ public class InviteeRegistrationServiceImpl extends RegistrationService {
         String activationToken = RandomStringUtils.randomAlphanumeric(32);
 
         // Send registration email
-        String title = configDao.findByKey("event.title").getValue();
+        String title = configDao.findByKey(ConfigKey.TITLE).getValue();
         String subject = localizationService.getMessage("email.activation.invitee.subject", Collections.singletonList(title));
         Map<String, Object> attrs = getCommonEmailAttrs(activationToken, account);
         emailDispatcher.send(account.getEmail(), subject, "invitee-activation-email", attrs);

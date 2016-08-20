@@ -24,18 +24,19 @@
 
 package com.cfitzarl.cjfwed.service;
 
+import com.cfitzarl.cjfwed.data.enums.ResponseStatus;
+import com.cfitzarl.cjfwed.data.model.Attendant;
 import com.cfitzarl.cjfwed.data.model.Invitation;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * This is responsible for sending reminder emails to invitees who have not yet responded.
@@ -46,12 +47,8 @@ public class InvitationReminderService {
     @Autowired
     private InvitationService invitationService;
 
-    @Autowired
-    @Qualifier("emailTaskExecutor")
-    private ThreadPoolTaskExecutor taskExecutor;
-
     @Value("${reminder.interval}")
-    private int timeInterval = 15;
+    private int timeInterval = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InvitationReminderService.class);
 
@@ -61,10 +58,15 @@ public class InvitationReminderService {
         LOGGER.info("Running email reminder job");
 
         for (Invitation invitation : invitationService.findUnresponded()) {
-            DateTime now = new DateTime(DateTimeZone.UTC);
-            if (invitation.getLastUpdated().plusDays(timeInterval).isAfter(now)) {
+            List<Attendant> attendants = invitation.getAttendants();
+
+            if (attendants.stream().filter(hasNotResponded()).count() > 0) {
 
             }
         }
+    }
+
+    private static Predicate<Attendant> hasNotResponded() {
+        return attendant -> attendant.getResponseStatus() == ResponseStatus.PENDING;
     }
 }
