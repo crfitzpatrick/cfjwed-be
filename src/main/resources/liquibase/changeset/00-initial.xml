@@ -128,7 +128,7 @@
             <column name="activated" type="tinyint">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_updated" type="datetime" defaultValue="NOW()">
+            <column name="last_updated" type="datetime">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -167,7 +167,7 @@
             <column name="account" type="int">
                 <constraints nullable="true" foreignKeyName="fk_activation_accounts" deleteCascade="true" references="accounts(id)"/>
             </column>
-            <column name="last_updated" type="datetime" defaultValue="NOW()">
+            <column name="last_updated" type="datetime">
                 <constraints nullable="true"/>
             </column>
         </createTable>

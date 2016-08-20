@@ -72,7 +72,7 @@ public class SecurityConfigurationContainer extends WebSecurityConfigurerAdapter
             .csrf()
                 .disable()
             .authorizeRequests()
-                .antMatchers("/api/setup/**")
+                .antMatchers("/api/activations/**")
                     .permitAll()
                 .antMatchers("/**")
                     .fullyAuthenticated();
