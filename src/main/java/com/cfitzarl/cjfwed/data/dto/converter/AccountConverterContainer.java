@@ -79,7 +79,10 @@ public class AccountConverterContainer {
             account.setLastName(source.getLastName());
             account.setEmail(source.getEmail());
 
-            if ((account.getPassword() == null) || !BCrypt.checkpw(source.getPassword(), account.getPassword())) {
+            String pwd = account.getPassword();
+
+            if ((source.getPassword() != null)
+                    && ((account.getPassword() == null) || !BCrypt.checkpw(source.getPassword(), pwd))) {
                 account.setPassword(BCrypt.hashpw(source.getPassword(), BCrypt.gensalt()));
             }
 
