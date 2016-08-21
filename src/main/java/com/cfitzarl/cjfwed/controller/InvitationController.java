@@ -29,6 +29,7 @@ import com.cfitzarl.cjfwed.data.dto.AttendantDTO;
 import com.cfitzarl.cjfwed.data.dto.InvitationDTO;
 import com.cfitzarl.cjfwed.data.model.Attendant;
 import com.cfitzarl.cjfwed.data.model.Invitation;
+import com.cfitzarl.cjfwed.exception.BadRequestException;
 import com.cfitzarl.cjfwed.exception.ResourceNotFoundException;
 import com.cfitzarl.cjfwed.service.AttendantService;
 import com.cfitzarl.cjfwed.service.InvitationService;
@@ -119,6 +120,32 @@ public class InvitationController {
         }
 
         return attendants;
+    }
+
+    /**
+     * This creates an {@link Attendant}.
+     *
+     * @param invitationId The ID of the {@link Invitation} the {@link Attendant} will belong to. This is present to
+     *                     conform with REST principles
+     * @param attendantDTO the attendant data
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/{invitationId}/attendants", method = RequestMethod.POST)
+    public void processAttendant(@PathVariable Long invitationId, @Valid @RequestBody AttendantDTO attendantDTO) {
+        attendantService.save(modelMapper.map(attendantDTO, Attendant.class));
+    }
+
+    /**
+     * This deletes an {@link Attendant}.
+     *
+     * @param invitationId The ID of the {@link Invitation} the {@link Attendant} belongs to. This is present to
+     *                     conform with REST principles
+     * @param attendantId The ID of the {@link Attendant}
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/{invitationId}/attendants/{attendantId}", method = RequestMethod.DELETE)
+    public void deleteAttendant(@PathVariable Long invitationId, @PathVariable Long attendantId) {
+        attendantService.delete(attendantId);
     }
 
     /**

@@ -40,7 +40,7 @@ import javax.validation.Valid;
  */
 @Controller
 @ResponseBody
-@RequestMapping("/api/account")
+@RequestMapping("/api/accounts")
 public class AccountController {
 
     @Autowired
