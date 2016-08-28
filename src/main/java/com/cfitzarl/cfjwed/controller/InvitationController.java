@@ -129,9 +129,18 @@ public class InvitationController {
      *                     conform with REST principles
      * @param attendantDTO the attendant data
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{invitationId}/attendants", method = RequestMethod.POST)
     public void processAttendant(@PathVariable UUID invitationId, @Valid @RequestBody AttendantDTO attendantDTO) {
+        Attendant existingAttendant = attendantService.find(attendantDTO.getId());
+
+        if (existingAttendant != null) {
+            SecurityContextWrapper.authorize(existingAttendant.getInvitation().getAccount());
+        }
+
+        if (invitationService.find(invitationId) == null) {
+            throw new ResourceNotFoundException("Invitation with id %s not found", invitationId);
+        }
+
         attendantService.save(modelMapper.map(attendantDTO, Attendant.class));
     }
 

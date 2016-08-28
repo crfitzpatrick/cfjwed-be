@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.core.security;
 import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.exception.UnauthorizedException;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -43,7 +44,7 @@ public class SecurityContextWrapper {
     public static void authorize(Account account) {
         Object principal = getAuthentication().getPrincipal();
         if ((account == null || !account.getId().equals(principal)) && !"ROLE_ADMIN".equals(getRole())) {
-            throw new UnauthorizedException("Unauthorized access detected");
+            throw new AccessDeniedException("Unauthorized access detected");
         }
     }
 

@@ -89,6 +89,8 @@ public class AttendantConverterContainer {
 
             if ((source.getId() != null) && (attendantService.find(source.getId()) != null)) {
                 attendant = attendantService.find(source.getId());
+            } else {
+                attendant.setId(source.getId());
             }
 
             attendant.setName(source.getName());
