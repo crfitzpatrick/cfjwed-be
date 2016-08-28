@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MealOptionServiceImpl implements MealOptionService {
@@ -40,7 +41,7 @@ public class MealOptionServiceImpl implements MealOptionService {
 
     /** {@inheritDoc} **/
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         mealOptionDao.delete(id);
     }
 
@@ -52,7 +53,7 @@ public class MealOptionServiceImpl implements MealOptionService {
 
     /** {@inheritDoc} **/
     @Override
-    public MealOption find(Long id) {
+    public MealOption find(UUID id) {
         return mealOptionDao.findOne(id);
     }
 

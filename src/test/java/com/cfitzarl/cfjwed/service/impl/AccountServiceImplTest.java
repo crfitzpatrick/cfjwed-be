@@ -33,6 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +41,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -71,10 +71,11 @@ public class AccountServiceImplTest {
 
     @Test
     public void testFindByIdReturnsCorrectAccount() {
-        when(accountDao.findOne(1L)).thenReturn(account);
-        assertTrue(testee.find(1L).equals(account));
-        assertNull(testee.find(2L));
-        verify(accountDao, times(2)).findOne(anyLong());
+        UUID foundId = UUID.randomUUID();
+        when(accountDao.findOne(foundId)).thenReturn(account);
+        assertTrue(testee.find(foundId).equals(account));
+        assertNull(testee.find(UUID.randomUUID()));
+        verify(accountDao, times(2)).findOne(any());
     }
 
     @Test

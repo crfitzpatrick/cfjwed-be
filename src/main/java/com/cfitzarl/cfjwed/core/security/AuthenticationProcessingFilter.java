@@ -27,8 +27,10 @@ package com.cfitzarl.cfjwed.core.security;
 import com.cfitzarl.cfjwed.controller.ApiExceptionHandler;
 import com.cfitzarl.cfjwed.data.dto.AuthenticationDTO;
 import com.cfitzarl.cfjwed.data.model.Account;
+import com.cfitzarl.cfjwed.data.model.Invitation;
 import com.cfitzarl.cfjwed.exception.UnauthorizedException;
 import com.cfitzarl.cfjwed.service.AccountService;
+import com.cfitzarl.cfjwed.service.InvitationService;
 import com.cfitzarl.cfjwed.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
@@ -162,6 +164,9 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
         private AccountService accountService;
 
         @Autowired
+        private InvitationService invitationService;
+
+        @Autowired
         private RedisService redisService;
 
         /**
@@ -193,6 +198,12 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
             body.setLastName(account.getLastName());
             body.setRole(authority.getAuthority());
             body.setToken(authKey);
+
+            Invitation invitation = invitationService.findByAccount(account);
+
+            if (invitation != null) {
+                body.setInvitationId(invitation.getId());
+            }
 
             // Store the DTO for retrieval on subsequent requests
             redisService.set(authKey, new ObjectMapper().writeValueAsString(body));

@@ -30,12 +30,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The DAO representing the {@link Attendant} data model.
  */
 @Repository
-public interface AttendantDao extends JpaRepository<Attendant, Long> {
+public interface AttendantDao extends JpaRepository<Attendant, UUID> {
 
     /**
      * Returns the attends registered against a particular invitation.

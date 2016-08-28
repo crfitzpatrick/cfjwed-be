@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @ResponseBody
@@ -71,13 +72,13 @@ public class MealController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value =  "/{id}", method = RequestMethod.GET)
-    public MealOptionDTO getMeal(@PathVariable Long id) {
+    public MealOptionDTO getMeal(@PathVariable UUID id) {
         return modelMapper.map(mealOptionService.find(id), MealOptionDTO.class);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value =  "/{id}", method = RequestMethod.DELETE)
-    public void deleteMeal(@PathVariable Long id) {
+    public void deleteMeal(@PathVariable UUID id) {
         mealOptionService.delete(id);
     }
 }

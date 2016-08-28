@@ -29,11 +29,13 @@ import com.cfitzarl.cfjwed.data.model.Config;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 /**
  * The DAO representing the {@link Config} data model.
  */
 @Repository
-public interface ConfigDao extends JpaRepository<Config, Long> {
+public interface ConfigDao extends JpaRepository<Config, UUID> {
 
     /**
      * Returns a configuration by its key.

@@ -31,11 +31,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import java.util.UUID;
 
 /**
  * This is a base class for all data models. It defines the primary key and the last updated field. Prior to any
@@ -46,9 +45,9 @@ import javax.persistence.PrePersist;
 class AbstractIdBase {
 
     @Id
+    @Type(type="uuid-char")
     @Column(updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    protected UUID id;
 
     @Column(name = "last_updated", updatable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -56,6 +55,7 @@ class AbstractIdBase {
 
     @PrePersist
     public void handleLastUpdated() {
+        id = UUID.randomUUID();
         lastUpdated = new DateTime(DateTimeZone.UTC);
     }
 }

@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.data.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Data transfer object that provides authentication information to the UI.
@@ -34,6 +35,7 @@ import java.io.Serializable;
 @Data
 public class AuthenticationDTO implements Serializable {
     private String email;
+    private UUID invitationId;
     private String firstName;
     private String lastName;
     private String role;

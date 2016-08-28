@@ -28,17 +28,19 @@ import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.UUID;
+
 /**
  * Data transfer object that provides attendant information to the UI.
  */
 @Data
 public class AttendantDTO {
-    private Long id;
+    private UUID id;
 
     @NotEmpty
     private String name;
 
-    private Long diningOption;
+    private UUID diningOption;
     private ResponseStatus responseStatus;
-    private Long invitation;
+    private UUID invitation;
 }

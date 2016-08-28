@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This contains all admin {@link Account}-specific APIs. All of these APIs require an admin role.
@@ -92,7 +93,7 @@ public class AdminController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public AccountDTO displayAdmin(@PathVariable Long id) {
+    public AccountDTO displayAdmin(@PathVariable UUID id) {
         Account account = accountService.find(id);
 
         if (account == null) {
@@ -109,7 +110,7 @@ public class AdminController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteAdmin(@PathVariable Long id) {
+    public void deleteAdmin(@PathVariable UUID id) {
         Account account = accountService.find(id);
 
         if (account == null) {

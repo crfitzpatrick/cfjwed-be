@@ -28,10 +28,12 @@ import com.cfitzarl.cfjwed.data.model.MealOption;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 /**
  * The DAO representing the {@link MealOption} data model.
  */
 @Repository
-public interface MealOptionDao extends JpaRepository<MealOption, Long> {
+public interface MealOptionDao extends JpaRepository<MealOption, UUID> {
 
 }

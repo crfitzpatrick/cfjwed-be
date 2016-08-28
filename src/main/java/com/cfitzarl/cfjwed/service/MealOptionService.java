@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.service;
 import com.cfitzarl.cfjwed.data.model.MealOption;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This provides a service layer abstraction around {@link MealOption} data.
@@ -38,7 +39,7 @@ public interface MealOptionService {
      *
      * @param id the primary key
      */
-    void delete(Long id);
+    void delete(UUID id);
 
     /**
      * This returns all {@link MealOption} data.
@@ -53,7 +54,7 @@ public interface MealOptionService {
      * @param id the primary key
      * @return the meal
      */
-    MealOption find(Long id);
+    MealOption find(UUID id);
 
     /**
      * This saves a {@link MealOption}.

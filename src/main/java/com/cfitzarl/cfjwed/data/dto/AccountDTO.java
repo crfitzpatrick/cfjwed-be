@@ -30,6 +30,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * Data transfer object that provides account information to the UI.
@@ -43,7 +44,7 @@ public class AccountDTO {
     }
 
     @JsonView(View.Summary.class)
-    private Long id;
+    private UUID id;
 
     @NotEmpty
     @JsonView(View.Summary.class)

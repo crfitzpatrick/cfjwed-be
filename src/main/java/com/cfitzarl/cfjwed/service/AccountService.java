@@ -28,6 +28,7 @@ import com.cfitzarl.cfjwed.data.enums.AccountType;
 import com.cfitzarl.cfjwed.data.model.Account;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class defines and provides functionality for account manipulation.
@@ -55,7 +56,7 @@ public interface AccountService {
      * @param id the ID of the requested account
      * @return the account
      */
-    Account find(Long id);
+    Account find(UUID id);
 
     /**
      * Returns an account based on its email.

@@ -27,12 +27,14 @@ package com.cfitzarl.cfjwed.data.dto;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.UUID;
+
 /**
  * Data transfer object that provides meal information to the UI.
  */
 @Data
 public class MealOptionDTO {
-    private Long id;
+    private UUID id;
 
     @NotEmpty
     private String name;

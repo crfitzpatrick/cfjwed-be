@@ -47,8 +47,4 @@ public class Config extends AbstractIdBase {
 
     @Column
     public String value;
-
-    private static class ConfigUserType extends org.hibernate.type.EnumType {
-
-    }
 }

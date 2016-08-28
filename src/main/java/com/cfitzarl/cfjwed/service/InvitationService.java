@@ -24,9 +24,11 @@
 
 package com.cfitzarl.cfjwed.service;
 
+import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Invitation;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This handles all logic related to invitation management.
@@ -38,7 +40,7 @@ public interface InvitationService {
      *
      * @param id the id of the invitation
      */
-    void delete(Long id);
+    void delete(UUID id);
 
     /**
      * Returns an {@link Invitation} if one is found.
@@ -46,7 +48,15 @@ public interface InvitationService {
      * @param id the id of the invitation
      * @return
      */
-    Invitation find(long id);
+    Invitation find(UUID id);
+
+    /**
+     * Returns an invitation for a particular {@link Account}.
+     *
+     * @param account the account
+     * @return the invitation
+     */
+    Invitation findByAccount(Account account);
 
     /**
      * This returns a list of all {@link Invitation}s.

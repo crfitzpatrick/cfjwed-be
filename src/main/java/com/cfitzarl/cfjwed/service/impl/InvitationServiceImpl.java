@@ -26,6 +26,7 @@ package com.cfitzarl.cfjwed.service.impl;
 
 import com.cfitzarl.cfjwed.data.dao.AccountDao;
 import com.cfitzarl.cfjwed.data.dao.InvitationDao;
+import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Invitation;
 import com.cfitzarl.cfjwed.service.InvitationService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class InvitationServiceImpl implements InvitationService {
@@ -45,7 +47,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     /** {@inheritDoc} **/
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Invitation invitation = invitationDao.findOne(id);
         if (invitation != null) {
             if (invitation.getAccount() != null) {
@@ -57,14 +59,20 @@ public class InvitationServiceImpl implements InvitationService {
 
     /** {@inheritDoc} **/
     @Override
-    public Invitation find(long id) {
+    public Invitation find(UUID id) {
         return invitationDao.findOne(id);
     }
 
     /** {@inheritDoc} **/
     @Override
+    public Invitation findByAccount(Account account) {
+        return invitationDao.findByAccount(account);
+    }
+
+    /** {@inheritDoc} **/
+    @Override
     public List<Invitation> find() {
-        return invitationDao.findAll();
+        return invitationDao.findAllByOrderByNameAsc();
     }
 
     @Override

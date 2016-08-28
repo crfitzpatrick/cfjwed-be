@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class AttendantServiceImpl implements AttendantService {
@@ -46,7 +47,7 @@ public class AttendantServiceImpl implements AttendantService {
 
     /** {@inheritDoc} **/
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         attendantDao.delete(id);
     }
 
@@ -58,7 +59,7 @@ public class AttendantServiceImpl implements AttendantService {
 
     /** {@inheritDoc} **/
     @Override
-    public List<Attendant> findByInvitation(Long id) {
+    public List<Attendant> findByInvitation(UUID id) {
         Invitation invitation = invitationDao.findOne(id);
 
         if (invitation == null) {
@@ -70,7 +71,7 @@ public class AttendantServiceImpl implements AttendantService {
 
     /** {@inheritDoc} **/
     @Override
-    public Attendant find(Long id) {
+    public Attendant find(UUID id) {
         return attendantDao.findOne(id);
     }
 

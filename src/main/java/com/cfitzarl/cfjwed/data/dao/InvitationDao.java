@@ -24,17 +24,29 @@
 
 package com.cfitzarl.cfjwed.data.dao;
 
+import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Invitation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * The DAO representing the {@link Invitation} data model.
  */
 @Repository
-public interface InvitationDao extends JpaRepository<Invitation, Long> {
+public interface InvitationDao extends JpaRepository<Invitation, UUID> {
+
+    /**
+     * Returns the invitation associated with a particular account.
+     *
+     * @param account the account
+     * @return the invitation
+     */
+    Invitation findByAccount(Account account);
 
     /**
      * Returns an invitation by its registration code.
@@ -43,6 +55,13 @@ public interface InvitationDao extends JpaRepository<Invitation, Long> {
      * @return the invitation if it exists
      */
     Invitation findByCode(String code);
+
+    /**
+     * Returns a list of invitations in ascending order by name.
+     *
+     * @return the invitations
+     */
+    List<Invitation> findAllByOrderByNameAsc();
 
     /**
      * Returns whether an invitation exists with the given code.

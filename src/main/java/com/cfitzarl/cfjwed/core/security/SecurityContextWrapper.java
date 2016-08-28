@@ -30,12 +30,14 @@ import com.cfitzarl.cfjwed.exception.UnauthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.UUID;
+
 public class SecurityContextWrapper {
 
     private SecurityContextWrapper() { }
 
-    public static Long getId() {
-        return (Long) getAuthentication().getPrincipal();
+    public static UUID getId() {
+        return (UUID) getAuthentication().getPrincipal();
     }
 
     public static void authorize(Account account) {

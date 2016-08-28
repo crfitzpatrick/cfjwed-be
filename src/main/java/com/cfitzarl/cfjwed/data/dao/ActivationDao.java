@@ -28,11 +28,13 @@ import com.cfitzarl.cfjwed.data.model.Activation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 /**
  * The DAO representing the {@link Activation} data model.
  */
 @Repository
-public interface ActivationDao extends JpaRepository<Activation, Long> {
+public interface ActivationDao extends JpaRepository<Activation, UUID> {
 
     /**
      * Returns an activation by its token.

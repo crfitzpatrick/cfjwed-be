@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2016  Christopher R. Fitzpatrick
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <!--
+        This changeset will switch the primary key data type from an auto-incrementing integer to a UUID.
+    -->
+
+    <changeSet id="10" author="cfitzpatrick">
+
+        <!--
+            First add temporary columns for both the primary key and any relational data. The values for tmp_id can be
+            automatically computed as there is no chance that the originating ID column is null. This is not the case
+            for columns used to establish relationships.
+        -->
+
+        <addColumn tableName="accounts">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+        </addColumn>
+
+        <addColumn tableName="activations">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+            <column name="tmp_account" type="char(36)"/>
+        </addColumn>
+
+        <addColumn tableName="attendants">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+            <column name="tmp_invitation" type="char(36)"/>
+            <column name="tmp_dining_option" type="char(36)"/>
+        </addColumn>
+
+        <addColumn tableName="event_configs">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+        </addColumn>
+
+        <addColumn tableName="invitations">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+            <column name="tmp_account" type="char(36)"/>
+        </addColumn>
+
+        <addColumn tableName="meal_options">
+            <column name="tmp_id" type="char(36)" valueComputed="UUID()"/>
+        </addColumn>
+
+        <!--
+            Add a random UUID to the tmp table for existing relational data.
+        -->
+
+        <sql>
+            UPDATE activations SET tmp_account = UUID() WHERE account IS NOT NULL;
+            UPDATE attendants SET tmp_invitation = UUID() WHERE invitation IS NOT NULL;
+            UPDATE attendants SET tmp_dining_option = UUID() WHERE dining_option IS NOT NULL;
+            UPDATE invitations SET tmp_account = UUID() WHERE account IS NOT NULL;
+        </sql>
+
+        <!--
+            Update foreign keys with the newly generated UUIDs.
+        -->
+
+        <sql>
+            UPDATE activations actv
+                JOIN accounts acct ON actv.account = acct.id
+                SET actv.tmp_account = acct.tmp_id;
+
+            UPDATE invitations invt
+                JOIN accounts acct ON invt.account = acct.id
+                SET invt.tmp_account = acct.tmp_id;
+
+            UPDATE attendants attds
+                JOIN meal_options meal ON attds.dining_option = meal.id
+                SET attds.tmp_dining_option = meal.tmp_id;
+
+            UPDATE attendants attds
+                JOIN invitations invt ON attds.invitation = invt.id
+                SET attds.tmp_invitation = invt.tmp_id;
+        </sql>
+
+        <!--
+            Drop all foreign key constraints and integer-based IDs.
+        -->
+
+        <dropAllForeignKeyConstraints baseTableName="accounts"/>
+        <dropAllForeignKeyConstraints baseTableName="activations"/>
+        <dropAllForeignKeyConstraints baseTableName="attendants"/>
+        <dropAllForeignKeyConstraints baseTableName="event_configs"/>
+        <dropAllForeignKeyConstraints baseTableName="invitations"/>
+        <dropAllForeignKeyConstraints baseTableName="meal_options"/>
+
+        <dropColumn tableName="accounts" columnName="id"/>
+        <dropColumn tableName="activations" columnName="id"/>
+        <dropColumn tableName="activations" columnName="account"/>
+        <dropColumn tableName="attendants" columnName="id"/>
+        <dropColumn tableName="attendants" columnName="dining_option"/>
+        <dropColumn tableName="attendants" columnName="invitation"/>
+        <dropColumn tableName="event_configs" columnName="id"/>
+        <dropColumn tableName="invitations" columnName="id"/>
+        <dropColumn tableName="invitations" columnName="account"/>
+        <dropColumn tableName="meal_options" columnName="id"/>
+
+        <!--
+            Rename all temporary columns back to their original value and add primary and unique key constraints.
+        -->
+
+        <renameColumn tableName="accounts" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+        <renameColumn tableName="activations" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+        <renameColumn tableName="activations" oldColumnName="tmp_account" newColumnName="account" columnDataType="char(36)"/>
+        <renameColumn tableName="attendants" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+        <renameColumn tableName="attendants" oldColumnName="tmp_dining_option" newColumnName="dining_option" columnDataType="char(36)"/>
+        <renameColumn tableName="attendants" oldColumnName="tmp_invitation" newColumnName="invitation" columnDataType="char(36)"/>
+        <renameColumn tableName="event_configs" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+        <renameColumn tableName="invitations" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+        <renameColumn tableName="invitations" oldColumnName="tmp_account" newColumnName="account" columnDataType="char(36)"/>
+        <renameColumn tableName="meal_options" oldColumnName="tmp_id" newColumnName="id" columnDataType="char(36)"/>
+
+        <addPrimaryKey tableName="accounts" columnNames="id"/>
+        <addPrimaryKey tableName="activations" columnNames="id"/>
+        <addPrimaryKey tableName="attendants" columnNames="id"/>
+        <addPrimaryKey tableName="event_configs" columnNames="id"/>
+        <addPrimaryKey tableName="invitations" columnNames="id"/>
+        <addPrimaryKey tableName="meal_options" columnNames="id"/>
+
+        <addUniqueConstraint tableName="accounts" columnNames="id"/>
+        <addUniqueConstraint tableName="activations" columnNames="id"/>
+        <addUniqueConstraint tableName="attendants" columnNames="id"/>
+        <addUniqueConstraint tableName="event_configs" columnNames="id"/>
+        <addUniqueConstraint tableName="invitations" columnNames="id"/>
+        <addUniqueConstraint tableName="meal_options" columnNames="id"/>
+
+        <!--
+            Re-establish foreign keys.
+        -->
+
+        <addForeignKeyConstraint baseTableName="activations"
+                                 baseColumnNames="account"
+                                 constraintName="fk_activation_accounts"
+                                 referencedTableName="accounts"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="invitations"
+                                 baseColumnNames="account"
+                                 constraintName="fk_invitation_accounts"
+                                 referencedTableName="accounts"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="attendants"
+                                 baseColumnNames="dining_option"
+                                 constraintName="fk_attendants_meal_options"
+                                 referencedTableName="meal_options"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="attendants"
+                                 baseColumnNames="invitation"
+                                 constraintName="fk_attendants_invitations"
+                                 referencedTableName="invitations"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

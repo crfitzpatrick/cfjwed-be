@@ -34,6 +34,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -55,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
 
     /** {@inheritDoc} **/
     @Override
-    public Account find(Long id) {
+    public Account find(UUID id) {
         return accountDao.findOne(id);
     }
 

@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This provides all API functionality related to {@link Invitation}s.
@@ -83,7 +84,7 @@ public class InvitationController {
      * @return invitation data
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public InvitationDTO provideInvitation(@PathVariable Long id) {
+    public InvitationDTO provideInvitation(@PathVariable UUID id) {
         Invitation invitation = invitationService.find(id);
 
         if (invitation == null) { throw new ResourceNotFoundException(); }
@@ -99,7 +100,7 @@ public class InvitationController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteInvitation(@PathVariable Long id) {
+    public void deleteInvitation(@PathVariable UUID id) {
         invitationService.delete(id);
     }
 
@@ -111,7 +112,7 @@ public class InvitationController {
      * @return a list of attendant data
      */
     @RequestMapping(value = "/{id}/attendants", method = RequestMethod.GET)
-    public List<AttendantDTO> returnAttendants(@PathVariable Long id) {
+    public List<AttendantDTO> returnAttendants(@PathVariable UUID id) {
         List<AttendantDTO> attendants = new ArrayList<>();
 
         for (Attendant attendant : attendantService.findByInvitation(id)) {
@@ -130,7 +131,7 @@ public class InvitationController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{invitationId}/attendants", method = RequestMethod.POST)
-    public void processAttendant(@PathVariable Long invitationId, @Valid @RequestBody AttendantDTO attendantDTO) {
+    public void processAttendant(@PathVariable UUID invitationId, @Valid @RequestBody AttendantDTO attendantDTO) {
         attendantService.save(modelMapper.map(attendantDTO, Attendant.class));
     }
 
@@ -143,7 +144,7 @@ public class InvitationController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{invitationId}/attendants/{attendantId}", method = RequestMethod.DELETE)
-    public void deleteAttendant(@PathVariable Long invitationId, @PathVariable Long attendantId) {
+    public void deleteAttendant(@PathVariable UUID invitationId, @PathVariable UUID attendantId) {
         attendantService.delete(attendantId);
     }
 

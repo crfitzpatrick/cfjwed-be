@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.service;
 import com.cfitzarl.cfjwed.data.model.Attendant;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This provides functionality relating to attendants.
@@ -38,7 +39,7 @@ public interface AttendantService {
      *
      * @param id the id
      */
-    void delete(Long id);
+    void delete(UUID id);
 
     /**
      * This returns all attendants.
@@ -53,7 +54,7 @@ public interface AttendantService {
      * @param id the primary key of the invitation
      * @return a list of attendants
      */
-    List<Attendant> findByInvitation(Long id);
+    List<Attendant> findByInvitation(UUID id);
 
     /**
      * Find an attendant by its primary key.
@@ -61,7 +62,7 @@ public interface AttendantService {
      * @param id the id
      * @return the attendant if it exists
      */
-    Attendant find(Long id);
+    Attendant find(UUID id);
 
     /**
      * This saves an attendant.

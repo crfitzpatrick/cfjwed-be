@@ -30,12 +30,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The DAO representing the {@link Account} data model.
  */
 @Repository
-public interface AccountDao extends JpaRepository<Account, Long> {
+public interface AccountDao extends JpaRepository<Account, UUID> {
 
     /**
      * Returns an account by its email address.
