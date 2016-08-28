@@ -26,17 +26,14 @@ package com.cfitzarl.cfjwed.service.impl;
 
 import com.cfitzarl.cfjwed.data.dao.ActivationDao;
 import com.cfitzarl.cfjwed.data.model.Activation;
-import com.cfitzarl.cfjwed.exception.BadRequestException;
 import com.cfitzarl.cfjwed.service.AccountService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -58,13 +55,6 @@ public class ActivationServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    @Test(expected = BadRequestException.class)
-    public void testActivateThrowsBadRequestExceptionWhenActivationNotFound() {
-        when(activationDao.findByToken(anyString())).thenReturn(null);
-        testee.activate("token");
-        verify(activationDao, times(1)).findByToken(anyString());
     }
 
     @Test
