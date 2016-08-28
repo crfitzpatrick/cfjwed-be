@@ -88,12 +88,14 @@ public class ActivationController {
      */
     @RequestMapping(value = "/{landingToken}", method = RequestMethod.GET)
     public ActivateDTO providePasswordSetupData(@PathVariable String landingToken) {
-        getActivation(landingToken);
+        if (activationService.find(landingToken) == null) {
+            throw new ResourceNotFoundException("No activation found with an id = %s", landingToken);
+        }
         return new ActivateDTO();
     }
 
     /**
-     * This will validate a password, mark the account as activate, and then save it.
+     * This will validate a password and activate an account.
      *
      * @param landingToken the token associated with the activation
      * @param activateDTO the activation DTO
@@ -108,28 +110,6 @@ public class ActivationController {
             throw new BadRequestException("Password and its confirm password must match");
         }
 
-        Activation activation = getActivation(landingToken);
-        Account account = activation.getAccount();
-        account.setPassword(activateDTO.getPassword());
-
-        accountService.save(account);
-        activationService.activate(landingToken);
-    }
-
-    /**
-     * This returns an {@link Activation} by its token and throws a {@link ResourceNotFoundException} if
-     * one is not found.
-     *
-     * @param landingToken the token
-     * @return the activation
-     */
-    private Activation getActivation(String landingToken) {
-        Activation activation = activationService.find(landingToken);
-
-        if (activation == null) {
-            throw new ResourceNotFoundException("No activation found with an id = %s", landingToken);
-        }
-
-        return activation;
+        activationService.activate(landingToken, activateDTO.getPassword());
     }
 }

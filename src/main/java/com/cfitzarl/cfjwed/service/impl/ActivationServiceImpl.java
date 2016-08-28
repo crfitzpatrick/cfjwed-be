@@ -27,7 +27,7 @@ package com.cfitzarl.cfjwed.service.impl;
 import com.cfitzarl.cfjwed.data.dao.ActivationDao;
 import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Activation;
-import com.cfitzarl.cfjwed.exception.BadRequestException;
+import com.cfitzarl.cfjwed.exception.ResourceNotFoundException;
 import com.cfitzarl.cfjwed.service.AccountService;
 import com.cfitzarl.cfjwed.service.ActivationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +44,17 @@ public class ActivationServiceImpl implements ActivationService {
 
     /** {@inheritDoc} **/
     @Override
-    public void activate(String token) {
+    public void activate(String token, String password) {
         Activation activation = activationDao.findByToken(token);
 
-        if (activation == null) { throw new BadRequestException("Activation not found"); }
+        if (activation == null) { throw new ResourceNotFoundException("Activation not found"); }
 
         Account account = activation.getAccount();
         account.setActivated(true);
+        account.setPassword(password);
         accountService.save(account);
+
+        activationDao.delete(activation);
     }
 
     /** {@inheritDoc} **/

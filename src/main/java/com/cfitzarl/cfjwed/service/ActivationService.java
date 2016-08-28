@@ -32,11 +32,12 @@ import com.cfitzarl.cfjwed.data.model.Activation;
 public interface ActivationService {
 
     /**
-     * Activates an account via its activation token.
+     * Activates an account via its activation token and deletes the {@link Activation} record.
      *
      * @param token the activation token
+     * @param password the requested password
      */
-    void activate(String token);
+    void activate(String token, String password);
 
     /**
      * Returns an activation given its token.

@@ -236,7 +236,7 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
         @Override
         public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse res, AuthenticationException e)
                 throws IOException, ServletException {
-            LOGGER.error("Authentication failure detected", e);
+            LOGGER.debug("Authentication failure detected", e);
 
             if (!(e instanceof BadCredentialsException)) {
                 res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
