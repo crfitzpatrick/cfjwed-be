@@ -25,7 +25,7 @@
 package com.cfitzarl.cfjwed.controller;
 
 import com.cfitzarl.cfjwed.data.dto.ConfigDTO;
-import com.cfitzarl.cfjwed.data.dto.ValidList;
+import com.cfitzarl.cfjwed.data.dto.ListContainer;
 import com.cfitzarl.cfjwed.data.model.Config;
 
 import com.cfitzarl.cfjwed.service.ConfigurationService;
@@ -78,7 +78,7 @@ public class ConfigurationController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void processConfig(@Valid @RequestBody ValidList<ConfigDTO> configs) {
+    public void processConfig(@Valid @RequestBody ListContainer<ConfigDTO> configs) {
         for (ConfigDTO configDto : configs.getList()) {
             configurationService.save(modelMapper.map(configDto, Config.class));
         }

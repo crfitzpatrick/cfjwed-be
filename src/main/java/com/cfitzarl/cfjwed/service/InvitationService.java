@@ -26,6 +26,7 @@ package com.cfitzarl.cfjwed.service;
 
 import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Invitation;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +35,13 @@ import java.util.UUID;
  * This handles all logic related to invitation management.
  */
 public interface InvitationService {
+
+    /**
+     * This returns the total number of invitations.
+     *
+     * @return the total number of invitations
+     */
+    long getTotalCount();
 
     /**
      * This deletes an {@link Invitation}.
@@ -59,11 +67,11 @@ public interface InvitationService {
     Invitation findByAccount(Account account);
 
     /**
-     * This returns a list of all {@link Invitation}s.
+     * This returns a list of {@link Invitation}s by page and limit.
      *
      * @return all invitations
      */
-    List<Invitation> find();
+    Page<Invitation> find(Integer page, Integer limit);
 
     /**
      * This returns a list of all {@link Invitation}s where the invitee has not yet responded.

@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.controller;
 import com.cfitzarl.cfjwed.core.security.SecurityContextWrapper;
 import com.cfitzarl.cfjwed.data.dto.AttendantDTO;
 import com.cfitzarl.cfjwed.data.dto.InvitationDTO;
+import com.cfitzarl.cfjwed.data.dto.ListContainer;
 import com.cfitzarl.cfjwed.data.model.Attendant;
 import com.cfitzarl.cfjwed.data.model.Invitation;
 import com.cfitzarl.cfjwed.exception.ResourceNotFoundException;
@@ -63,16 +64,20 @@ public class InvitationController {
     /**
      * This returns a list of {@link Invitation} data by transforming them into a list of {@link InvitationDTO}s.
      *
+     * @param page the page to be displayed
+     * @param limit the invitation per-page limit
      * @return the list of invitation DTOs
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<InvitationDTO> provideInvitations() {
-        List<InvitationDTO> invitations = new ArrayList<>();
+    public ListContainer<InvitationDTO> provideInvitations(@RequestParam Integer page, @RequestParam Integer limit) {
+        ListContainer<InvitationDTO> invitations = new ListContainer<>();
 
-        for (Invitation invitation : invitationService.find()) {
-            invitations.add(modelMapper.map(invitation, InvitationDTO.class));
+        for (Invitation invitation : invitationService.find(page, limit)) {
+            invitations.addToList(modelMapper.map(invitation, InvitationDTO.class));
         }
+
+        invitations.setCount(invitationService.getTotalCount());
 
         return invitations;
     }

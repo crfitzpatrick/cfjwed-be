@@ -31,6 +31,9 @@ import com.cfitzarl.cfjwed.data.model.Invitation;
 import com.cfitzarl.cfjwed.service.InvitationService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +47,12 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Autowired
     private InvitationDao invitationDao;
+
+    /** {@inheritDoc} **/
+    @Override
+    public long getTotalCount() {
+        return invitationDao.count();
+    }
 
     /** {@inheritDoc} **/
     @Override
@@ -71,8 +80,8 @@ public class InvitationServiceImpl implements InvitationService {
 
     /** {@inheritDoc} **/
     @Override
-    public List<Invitation> find() {
-        return invitationDao.findAllByOrderByNameAsc();
+    public Page<Invitation> find(Integer page, Integer limit) {
+        return invitationDao.findAll(new PageRequest(page, limit, Sort.Direction.ASC, "name"));
     }
 
     @Override

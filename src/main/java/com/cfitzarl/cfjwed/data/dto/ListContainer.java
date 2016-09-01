@@ -25,8 +25,10 @@
 package com.cfitzarl.cfjwed.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,17 +37,17 @@ import java.util.List;
  *
  * @param <E> The type of list
  */
-public class ValidList<E> {
+@Data
+public class ListContainer<E> {
+
+    @JsonProperty("count")
+    private Long count;
 
     @Valid
-    @JsonProperty("list")
-    private List<E> list;
+    @JsonProperty("items")
+    private List<E> list = new ArrayList<>();
 
-    public void setList(List<E> list) {
-        this.list = list;
-    }
-
-    public List<E> getList() {
-        return list;
+    public void addToList(E item) {
+        list.add(item);
     }
 }

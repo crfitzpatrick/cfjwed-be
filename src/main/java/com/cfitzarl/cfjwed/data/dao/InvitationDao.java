@@ -26,6 +26,8 @@ package com.cfitzarl.cfjwed.data.dao;
 
 import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Invitation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -47,6 +49,14 @@ public interface InvitationDao extends JpaRepository<Invitation, UUID> {
      * @return the invitation
      */
     Invitation findByAccount(Account account);
+
+    /**
+     * Returns a paginated slice of {@link Invitation}s.
+     *
+     * @param pageable the page data
+     * @return a paginated slice
+     */
+    Page<Invitation> findAll(Pageable pageable);
 
     /**
      * Returns an invitation by its registration code.
