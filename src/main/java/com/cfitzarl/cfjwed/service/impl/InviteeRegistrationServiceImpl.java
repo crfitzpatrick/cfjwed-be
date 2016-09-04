@@ -66,11 +66,11 @@ public class InviteeRegistrationServiceImpl extends RegistrationService {
         Invitation invitation = invitationDao.findByCode(account.getInvitationCode());
 
         if (invitation == null) {
-            throw new BadRequestException("Invalid invitation code provided");
+            throw new BadRequestException("errors.code.invalid");
         }
 
         if (invitation.getAccount() != null) {
-            throw new BadRequestException("Invitation code already used");
+            throw new BadRequestException("errors.code.used");
         }
 
         // Associate account with invitation

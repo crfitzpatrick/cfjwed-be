@@ -72,7 +72,14 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MappingException.class, BadRequestException.class, IllegalArgumentException.class, MethodArgumentNotValidException.class})
     public void handleBadRequestExceptions(Exception e, HttpServletResponse response) throws IOException {
-        respond(e, "errors.bad.data", response);
+        String code = "errors.bad.data";
+
+        // Use provided message code if present and valid
+        if (localizationService.codeExists(e.getMessage())) {
+            code = e.getMessage();
+        }
+
+        respond(e, code, response);
     }
 
     @ExceptionHandler({AuthenticationException.class, UnauthorizedException.class})

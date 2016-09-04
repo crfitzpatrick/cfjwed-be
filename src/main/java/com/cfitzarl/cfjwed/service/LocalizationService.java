@@ -32,6 +32,14 @@ import java.util.List;
 public interface LocalizationService {
 
     /**
+     * Returns whether a message code is valid.
+     *
+     * @param code the code to check
+     * @return whether the code exists
+     */
+    boolean codeExists(String code);
+
+    /**
      * Returns a message based off its string code.
      *
      * @param code the code

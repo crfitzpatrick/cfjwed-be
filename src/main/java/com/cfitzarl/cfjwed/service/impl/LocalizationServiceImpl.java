@@ -48,6 +48,12 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     /** {@inheritDoc} **/
     @Override
+    public boolean codeExists(String code) {
+        return (code != null) && !code.equals(getMessage(code));
+    }
+
+    /** {@inheritDoc} **/
+    @Override
     public String getMessage(String code) {
         return getMessage(code, new ArrayList<>());
     }
