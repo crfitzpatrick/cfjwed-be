@@ -27,10 +27,12 @@ package com.cfitzarl.cfjwed.service.impl;
 import com.cfitzarl.cfjwed.data.dao.AccountDao;
 import com.cfitzarl.cfjwed.data.enums.AccountType;
 import com.cfitzarl.cfjwed.data.model.Account;
-import org.junit.Before;
+import com.cfitzarl.cfjwed.exception.DuplicateEmailException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -42,61 +44,85 @@ import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AccountServiceImplTest {
 
-    @InjectMocks
-    private AccountServiceImpl testee = new AccountServiceImpl();
+    @Mock
+    private AccountDao accountDao;
 
-    private AccountDao accountDao = mock(AccountDao.class);
+    @InjectMocks
+    private AccountServiceImpl accountService;
 
     private Account account = new Account();
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    @Test
+    public void testDeleteDeletesAccount() {
+        accountService.delete(account);
+
+        verify(accountDao, times(1)).delete(account);
     }
 
     @Test
     public void testFindByAccountTypeReturnsCorrectAccount() {
         when(accountDao.findByType(AccountType.ADMIN)).thenReturn(Collections.singletonList(account));
-        assertTrue(testee.find(AccountType.ADMIN).equals(Collections.singletonList(account)));
-        assertEquals(testee.find(AccountType.INVITEE).size(), 0);
+
+        assertTrue(accountService.find(AccountType.ADMIN).equals(Collections.singletonList(account)));
+        assertEquals(accountService.find(AccountType.INVITEE).size(), 0);
+
         verify(accountDao, times(2)).findByType(any(AccountType.class));
     }
 
     @Test
-    public void testFindByIdReturnsCorrectAccount() {
+    public void testFindReturnsCorrectAccount() {
         UUID foundId = UUID.randomUUID();
         when(accountDao.findOne(foundId)).thenReturn(account);
-        assertTrue(testee.find(foundId).equals(account));
-        assertNull(testee.find(UUID.randomUUID()));
+
+        assertTrue(accountService.find(foundId).equals(account));
+        assertNull(accountService.find(UUID.randomUUID()));
+
         verify(accountDao, times(2)).findOne(any());
     }
 
     @Test
     public void findByEmailReturnsCorrectAccount() throws Exception {
         when(accountDao.findByEmail("email@email.com")).thenReturn(account);
-        assertTrue(testee.findByEmail("email@email.com").equals(account));
-        assertNull(testee.findByEmail("nope"));
+
+        assertTrue(accountService.findByEmail("email@email.com").equals(account));
+        assertNull(accountService.findByEmail("nope"));
+
         verify(accountDao, times(2)).findByEmail(anyString());
     }
 
     @Test
     public void hasValidCredsReturnsCorrectResponse() throws Exception {
         account.setPassword("password");
-        assertTrue(testee.hasValidCreds(account, "password"));
-        assertFalse(testee.hasValidCreds(account, "notPassword"));
+
+        assertTrue(accountService.hasValidCreds(account, "password"));
+        assertFalse(accountService.hasValidCreds(account, "notPassword"));
     }
 
     @Test
     public void testSavePersistsAccount() throws Exception {
         when(accountDao.save(account)).thenReturn(account);
-        assertEquals(testee.save(account), account);
+        assertEquals(accountService.save(account), account);
         verify(accountDao, times(1)).save(account);
+    }
+
+    @Test(expected = DuplicateEmailException.class)
+    public void testSaveDuplicateEmailThrowsDuplicateEmailException() {
+        String email = "test@email.com";
+        account.setId(UUID.randomUUID());
+        account.setEmail(email);
+
+        when(accountDao.findByEmail(anyString())).thenReturn(account);
+
+        Account dupedAccount = new Account();
+        dupedAccount.setEmail(email);
+
+        accountService.save(dupedAccount);
     }
 }

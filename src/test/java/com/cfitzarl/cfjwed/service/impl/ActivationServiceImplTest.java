@@ -26,49 +26,54 @@ package com.cfitzarl.cfjwed.service.impl;
 
 import com.cfitzarl.cfjwed.data.dao.ActivationDao;
 import com.cfitzarl.cfjwed.data.model.Activation;
+import com.cfitzarl.cfjwed.exception.ResourceNotFoundException;
 import com.cfitzarl.cfjwed.service.AccountService;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActivationServiceImplTest {
 
     @InjectMocks
-    private ActivationServiceImpl testee = new ActivationServiceImpl();
+    private ActivationServiceImpl activationService;
 
-    private AccountService accountService = mock(AccountService.class);
+    @Mock
+    private AccountService accountService;
 
-    private ActivationDao activationDao = spy(ActivationDao.class);
+    @Mock
+    private ActivationDao activationDao;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    @Test(expected = ResourceNotFoundException.class)
+    public void testActivateThrowsResourceNotFoundWhenActivationNotFound() {
+        when(activationDao.findByToken(anyString())).thenReturn(null);
+
+        activationService.activate("token", "password");
     }
 
     @Test
-    public void findActivationReturnsCorrectActivation() {
+    public void testFindReturnsCorrectActivation() {
         when(activationDao.findByToken("correctToken")).thenReturn(new Activation());
-        assertNotNull(testee.find("correctToken"));
-        assertNull(testee.find("incorrectToken"));
+        assertNotNull(activationService.find("correctToken"));
+        assertNull(activationService.find("incorrectToken"));
         verify(activationDao, times(2)).findByToken(anyString());
     }
 
     @Test
     public void testSavePersistsActivation() {
         Activation activation = new Activation();
-        testee.save(activation);
+        activationService.save(activation);
         verify(activationDao, times(1)).save(any(Activation.class));
     }
 }
