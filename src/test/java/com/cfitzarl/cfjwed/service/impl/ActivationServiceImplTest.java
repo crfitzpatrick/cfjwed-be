@@ -25,6 +25,7 @@
 package com.cfitzarl.cfjwed.service.impl;
 
 import com.cfitzarl.cfjwed.data.dao.ActivationDao;
+import com.cfitzarl.cfjwed.data.model.Account;
 import com.cfitzarl.cfjwed.data.model.Activation;
 import com.cfitzarl.cfjwed.exception.ResourceNotFoundException;
 import com.cfitzarl.cfjwed.service.AccountService;
@@ -63,10 +64,25 @@ public class ActivationServiceImplTest {
     }
 
     @Test
+    public void testActivateActivatesAndDeletesActivation() {
+        Account account = new Account();
+        Activation activation = new Activation();
+        activation.setAccount(account);
+
+        when(activationDao.findByToken("1234")).thenReturn(activation);
+
+        activationService.activate("1234", "password");
+
+        verify(activationDao, times(1)).delete(activation);
+    }
+
+    @Test
     public void testFindReturnsCorrectActivation() {
         when(activationDao.findByToken("correctToken")).thenReturn(new Activation());
+
         assertNotNull(activationService.find("correctToken"));
         assertNull(activationService.find("incorrectToken"));
+
         verify(activationDao, times(2)).findByToken(anyString());
     }
 
@@ -74,6 +90,7 @@ public class ActivationServiceImplTest {
     public void testSavePersistsActivation() {
         Activation activation = new Activation();
         activationService.save(activation);
+
         verify(activationDao, times(1)).save(any(Activation.class));
     }
 }
