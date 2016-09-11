@@ -60,6 +60,8 @@ public class InvitationReminderService {
         for (Invitation invitation : invitationService.findUnresponded()) {
             List<Attendant> attendants = invitation.getAttendants();
 
+            if (attendants == null) { continue; }
+
             if (attendants.stream().filter(hasNotResponded()).count() > 0) {
 
             }

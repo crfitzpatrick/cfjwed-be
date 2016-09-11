@@ -24,6 +24,7 @@
 
 package com.cfitzarl.cfjwed.service;
 
+import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
 import com.cfitzarl.cfjwed.data.model.Attendant;
 
 import java.util.List;
@@ -33,6 +34,14 @@ import java.util.UUID;
  * This provides functionality relating to attendants.
  */
 public interface AttendantService {
+
+    /**
+     * Returns the number of {@link Attendant}s with the specified {@link ResponseStatus}.
+     *
+     * @param status the status to filter by
+     * @return the count
+     */
+    long countByStatus(ResponseStatus status);
 
     /**
      * This deletes an attendant by its primary key.

@@ -22,54 +22,36 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cfjwed.service;
+package com.cfitzarl.cfjwed.data.dto;
 
-import com.cfitzarl.cfjwed.data.model.MealOption;
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
- * This provides a service layer abstraction around {@link MealOption} data.
+ * Data transfer object used to provide statistical information to the UI.
  */
-public interface MealOptionService {
+@Data
+public class StatsDTO {
+    private long pendingAttendants;
+    private long acceptedAttendants;
+    private long declinedAttendants;
 
-    /**
-     * This deletes a {@link MealOption} by its primary key.
-     *
-     * @param id the primary key
-     */
-    void delete(UUID id);
+    private List<MealOptionEntry> mealStats = new ArrayList<>();
 
-    /**
-     * This returns all {@link MealOption} data.
-     *
-     * @return a list of meals
-     */
-    List<MealOption> find();
+    public void addMealStat(String name, Long count) {
+        mealStats.add(new MealOptionEntry(name, count));
+    }
 
-    /**
-     * This returns a {@link MealOption} from its primary key.
-     *
-     * @param id the primary key
-     * @return the meal
-     */
-    MealOption find(UUID id);
+    @Data
+    static class MealOptionEntry {
+        private String name;
+        private Long count;
 
-    /**
-     * This returns the total count of {@link com.cfitzarl.cfjwed.data.model.Attendant}s that have chosen each
-     * available {@link MealOption}.
-     *
-     * @return the total count
-     */
-    List<Pair<MealOption, Long>> getChosenMealCount();
-
-    /**
-     * This saves a {@link MealOption}.
-     *
-     * @param mealOption the meal
-     */
-    void save(MealOption mealOption);
+        MealOptionEntry(String name, Long count) {
+            this.name = name;
+            this.count = count;
+        }
+    }
 }

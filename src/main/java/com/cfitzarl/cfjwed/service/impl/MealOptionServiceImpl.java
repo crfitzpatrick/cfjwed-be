@@ -24,17 +24,24 @@
 
 package com.cfitzarl.cfjwed.service.impl;
 
+import com.cfitzarl.cfjwed.data.dao.AttendantDao;
 import com.cfitzarl.cfjwed.data.dao.MealOptionDao;
 import com.cfitzarl.cfjwed.data.model.MealOption;
 import com.cfitzarl.cfjwed.service.MealOptionService;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class MealOptionServiceImpl implements MealOptionService {
+
+    @Autowired
+    private AttendantDao attendantDao;
 
     @Autowired
     private MealOptionDao mealOptionDao;
@@ -55,6 +62,18 @@ public class MealOptionServiceImpl implements MealOptionService {
     @Override
     public MealOption find(UUID id) {
         return mealOptionDao.findOne(id);
+    }
+
+    /** {@inheritDoc} **/
+    @Override
+    public List<Pair<MealOption, Long>> getChosenMealCount() {
+        List<Pair<MealOption, Long>> mealGroupings = new ArrayList<>();
+
+        for (MealOption option : find()) {
+            mealGroupings.add(new ImmutablePair<>(option, attendantDao.countByMeal(option)));
+        }
+
+        return mealGroupings;
     }
 
     /** {@inheritDoc} **/

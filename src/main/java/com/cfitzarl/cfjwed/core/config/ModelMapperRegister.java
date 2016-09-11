@@ -49,6 +49,7 @@ public class ModelMapperRegister implements BeanPostProcessor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof Converter) {
             modelMapper.addConverter((Converter) bean);

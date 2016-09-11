@@ -26,6 +26,7 @@ package com.cfitzarl.cfjwed.service.impl;
 
 import com.cfitzarl.cfjwed.data.dao.AttendantDao;
 import com.cfitzarl.cfjwed.data.dao.InvitationDao;
+import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
 import com.cfitzarl.cfjwed.data.model.Attendant;
 import com.cfitzarl.cfjwed.data.model.Invitation;
 import com.cfitzarl.cfjwed.exception.BadRequestException;
@@ -44,6 +45,12 @@ public class AttendantServiceImpl implements AttendantService {
 
     @Autowired
     private InvitationDao invitationDao;
+
+    /** {@inheritDoc} **/
+    @Override
+    public long countByStatus(ResponseStatus status) {
+        return attendantDao.countByResponseStatus(status);
+    }
 
     /** {@inheritDoc} **/
     @Override

@@ -74,6 +74,8 @@ public class SecurityConfigurationContainer extends WebSecurityConfigurerAdapter
             .authorizeRequests()
                 .antMatchers("/api/activations/**")
                     .permitAll()
+                .antMatchers("/api/health")
+                    .permitAll()
                 .antMatchers("/**")
                     .fullyAuthenticated();
     }

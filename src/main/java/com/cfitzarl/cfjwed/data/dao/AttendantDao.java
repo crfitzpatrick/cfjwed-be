@@ -24,8 +24,10 @@
 
 package com.cfitzarl.cfjwed.data.dao;
 
+import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
 import com.cfitzarl.cfjwed.data.model.Attendant;
 import com.cfitzarl.cfjwed.data.model.Invitation;
+import com.cfitzarl.cfjwed.data.model.MealOption;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +39,22 @@ import java.util.UUID;
  */
 @Repository
 public interface AttendantDao extends JpaRepository<Attendant, UUID> {
+
+    /**
+     * Returns the number of attendants have chosen the specified {@link MealOption}.
+     *
+     * @param mealOption the meal option to filter by
+     * @return the number of people who have chosen it
+     */
+    long countByMeal(MealOption mealOption);
+
+    /**
+     * Returns the number of attendants by their {@link ResponseStatus}.
+     *
+     * @param status the status to filter by
+     * @return the count
+     */
+    long countByResponseStatus(ResponseStatus status);
 
     /**
      * Returns the attends registered against a particular invitation.

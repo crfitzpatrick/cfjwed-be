@@ -24,64 +24,57 @@
 
 package com.cfitzarl.cfjwed.controller;
 
-import com.cfitzarl.cfjwed.data.dto.MealOptionDTO;
+import com.cfitzarl.cfjwed.data.dto.StatsDTO;
+import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
 import com.cfitzarl.cfjwed.data.model.MealOption;
+import com.cfitzarl.cfjwed.service.AttendantService;
 import com.cfitzarl.cfjwed.service.MealOptionService;
-import org.modelmapper.ModelMapper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 /**
- * This contains all APIs referring to {@link MealOption}s.
+ * This provides statistical APIs for data analysis.
  */
 @Controller
 @ResponseBody
-@RequestMapping("/api/meals")
-public class MealController {
+@RequestMapping("/api/stats")
+public class StatsController {
+
+    @Autowired
+    private AttendantService attendantService;
 
     @Autowired
     private MealOptionService mealOptionService;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
+    /**
+     * This returns four different statistics back to the browser:
+     *
+     * <ul>
+     *    <li>The number of attendants who have accepted</li>
+     *    <li>The number of attendants who have declined</li>
+     *    <li>The number of attendants who have not yet responded</li>
+     *    <li>A breakdown of each meal and how many people have chosen them</li>
+     * </ul>
+     *
+     * @return the stats
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<MealOptionDTO> getAllDiningOptions() {
-        List<MealOptionDTO> dtoList = new ArrayList<>();
+    public StatsDTO displayStats() {
 
-        for (MealOption options : mealOptionService.find()) {
-            dtoList.add(modelMapper.map(options, MealOptionDTO.class));
+        StatsDTO dto = new StatsDTO();
+        dto.setAcceptedAttendants(attendantService.countByStatus(ResponseStatus.ACCEPTED));
+        dto.setDeclinedAttendants(attendantService.countByStatus(ResponseStatus.DECLINED));
+        dto.setPendingAttendants(attendantService.countByStatus(ResponseStatus.PENDING));
+
+        for (Pair<MealOption, Long> mealGroupings : mealOptionService.getChosenMealCount()) {
+            dto.addMealStat(mealGroupings.getLeft().getName(), mealGroupings.getRight());
         }
 
-        return dtoList;
+        return dto;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public void upsertMealOption(@Valid @RequestBody MealOptionDTO mealOption) {
-        mealOptionService.save(modelMapper.map(mealOption, MealOption.class));
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value =  "/{id}", method = RequestMethod.GET)
-    public MealOptionDTO getMeal(@PathVariable UUID id) {
-        return modelMapper.map(mealOptionService.find(id), MealOptionDTO.class);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value =  "/{id}", method = RequestMethod.DELETE)
-    public void deleteMeal(@PathVariable UUID id) {
-        mealOptionService.delete(id);
-    }
 }
