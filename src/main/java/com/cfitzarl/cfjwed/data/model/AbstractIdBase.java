@@ -55,7 +55,7 @@ class AbstractIdBase {
 
     @PrePersist
     public void handleLastUpdated() {
-        id = UUID.randomUUID();
+        if (id == null) { id = UUID.randomUUID(); }
         lastUpdated = new DateTime(DateTimeZone.UTC);
     }
 }
