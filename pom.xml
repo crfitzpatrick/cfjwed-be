@@ -233,6 +233,14 @@
             <version>1.5.5</version>
         </dependency>
 
+        <!-- CSV -->
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>3.7</version>
+        </dependency>
+
         <!-- Testing -->
 
         <dependency>

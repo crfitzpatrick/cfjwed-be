@@ -94,7 +94,10 @@ public class WebApplicationMvcConfigurer extends WebMvcConfigurerAdapter {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
-            "classpath:locales/events", "classpath:locales/emails", "classpath:locales/errors"
+            "classpath:locales/events",
+             "classpath:locales/emails",
+             "classpath:locales/errors",
+             "classpath:locales/reports"
         );
         return messageSource;
     }

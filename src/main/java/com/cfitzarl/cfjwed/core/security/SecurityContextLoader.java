@@ -66,6 +66,7 @@ public class SecurityContextLoader implements SecurityContextRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityContextLoader.class);
 
     private static final String AUTH_TOKEN_HEADER = "X-Auth-Token";
+    private static final String AUTH_TOKEN_PARAM = "authToken";
 
     /**
      * This method does all the heavy work in retrieving the context out of Redis. It inspects the servlet request
@@ -78,7 +79,9 @@ public class SecurityContextLoader implements SecurityContextRepository {
      */
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
-        String tokenParam = requestResponseHolder.getRequest().getHeader(AUTH_TOKEN_HEADER);
+        HttpServletRequest request = requestResponseHolder.getRequest();
+        String tokenParam = coalesce(request.getHeader(AUTH_TOKEN_HEADER), request.getParameter(AUTH_TOKEN_PARAM));
+
         SecurityContext securityContext = new SecurityContextImpl();
 
         if (tokenParam == null || !redisService.exists(tokenParam)) {
@@ -125,5 +128,18 @@ public class SecurityContextLoader implements SecurityContextRepository {
     public boolean containsContext(HttpServletRequest request) {
         String tokenParam = request.getParameter(AUTH_TOKEN_HEADER);
         return (tokenParam != null) && redisService.exists(tokenParam);
+    }
+
+    /**
+     * Returns the first non-null item.
+     *
+     * @param items a list of strings
+     * @return the first non-null string
+     */
+    private String coalesce(String... items) {
+        for (String item : items) {
+            if (item != null) { return item; }
+        }
+        return null;
     }
 }

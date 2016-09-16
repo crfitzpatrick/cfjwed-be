@@ -26,15 +26,23 @@ package com.cfitzarl.cfjwed.controller;
 
 import com.cfitzarl.cfjwed.data.dto.StatsDTO;
 import com.cfitzarl.cfjwed.data.enums.ResponseStatus;
+import com.cfitzarl.cfjwed.data.model.Attendant;
 import com.cfitzarl.cfjwed.data.model.MealOption;
 import com.cfitzarl.cfjwed.service.AttendantService;
+import com.cfitzarl.cfjwed.service.LocalizationService;
 import com.cfitzarl.cfjwed.service.MealOptionService;
+import com.opencsv.CSVWriter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This provides statistical APIs for data analysis.
@@ -46,6 +54,9 @@ public class StatsController {
 
     @Autowired
     private AttendantService attendantService;
+
+    @Autowired
+    private LocalizationService localizationService;
 
     @Autowired
     private MealOptionService mealOptionService;
@@ -62,6 +73,7 @@ public class StatsController {
      *
      * @return the stats
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public StatsDTO displayStats() {
 
@@ -75,6 +87,52 @@ public class StatsController {
         }
 
         return dto;
+    }
+
+    /**
+     * This returns a CSV file containing a list of attendants with the following fields:
+     *
+     * <ul>
+     *     <li>Name</li>
+     *     <li>Response</li>
+     *     <li>Meal</li>
+     * </ul>
+     *
+     * @param response the response
+     * @throws Exception
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/attendants.csv", method = RequestMethod.GET)
+    public void exportAttendantStats(HttpServletResponse response) throws Exception {
+        try (CSVWriter writer = new CSVWriter(response.getWriter())) {
+            // Write out the headers
+            writer.writeNext(
+                new String[] {
+                    localizationService.getMessage("attendants.csv.party"),
+                    localizationService.getMessage("attendants.csv.name"),
+                    localizationService.getMessage("attendants.csv.response"),
+                    localizationService.getMessage("attendants.csv.meal")
+                }
+            );
+
+            List<Attendant> attendants = attendantService.find();
+
+            // Sort by invitation name
+            Collections.sort(attendants,
+                ((attendant, t1) -> attendant.getInvitation().getName().compareTo(t1.getInvitation().getName()))
+            );
+
+            // Write out data for each attendant
+            for (Attendant attendant : attendants) {
+                String partyName = attendant.getInvitation().getName();
+                String status = attendant.getResponseStatus().toString();
+                String meal = (attendant.getMeal() == null) ? "" : attendant.getMeal().getName();
+                writer.writeNext(new String[] { partyName, attendant.getName(), status, meal });
+            }
+        }
+
+        response.addHeader("Content-Disposition", "attachment;filename=attendants.csv");
+        response.setContentType("text/csv");
     }
 
 }
