@@ -79,7 +79,7 @@ public class EmailDispatchingServiceImpl implements EmailDispatchingService {
     @PostConstruct
     private void configureMailSender() {
         javaMailSender.setHost(host);
-        javaMailSender.setPort(Integer.valueOf(port));
+        javaMailSender.setPort(port);
     }
 
     /** {@inheritDoc} **/
