@@ -38,6 +38,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
@@ -104,6 +105,9 @@ public class StatsController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/attendants.csv", method = RequestMethod.GET)
     public void exportAttendantStats(HttpServletResponse response) throws Exception {
+        response.setHeader("Content-Disposition", "attachment; filename=attendants.csv");
+        response.setContentType("text/csv");
+
         try (CSVWriter writer = new CSVWriter(response.getWriter())) {
             // Write out the headers
             writer.writeNext(
@@ -130,9 +134,6 @@ public class StatsController {
                 writer.writeNext(new String[] { partyName, attendant.getName(), status, meal });
             }
         }
-
-        response.addHeader("Content-Disposition", "attachment;filename=attendants.csv");
-        response.setContentType("text/csv");
     }
 
 }
