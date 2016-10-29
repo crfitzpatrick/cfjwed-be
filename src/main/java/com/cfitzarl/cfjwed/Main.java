@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cfjwed.core.config;
+package com.cfitzarl.cfjwed;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-
-import com.cfitzarl.cfjwed.core.security.SecurityConfigurationContainer;
+import com.cfitzarl.cfjwed.core.config.WebApplicationMvcConfigurer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
@@ -36,21 +37,29 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 @Configuration
 @ComponentScan
-public class WebApplicationMvcInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+@SpringBootApplication(exclude = { HibernateJpaAutoConfiguration.class, LiquibaseAutoConfiguration.class })
+public class Main extends SpringBootServletInitializer {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+    }
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         // Add spring security filter chain
         servletContext.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class)
-                      .addMappingForUrlPatterns(null, false, "/*");
+                .addMappingForUrlPatterns(null, false, "/*");
 
         // Add Hibernate session binder
         servletContext.addFilter("jpaTransactionFilter", OpenEntityManagerInViewFilter.class)
-                      .addMappingForUrlPatterns(null, false, "/*");
+                .addMappingForUrlPatterns(null, false, "/*");
 
         // Define application context
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
@@ -67,20 +76,5 @@ public class WebApplicationMvcInitializer extends AbstractAnnotationConfigDispat
         servletRegister.addMapping("/");
 
         servletContext.addListener(new ContextLoaderListener(rootContext));
-    }
-
-    @Override
-    protected String[] getServletMappings() {
-        return new String[0];
-    }
-
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { SecurityConfigurationContainer.class, DatabaseConfigurationContainer.class };
-    }
-
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[0];
     }
 }
