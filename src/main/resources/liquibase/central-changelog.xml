@@ -29,11 +29,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <include file="/liquibase/changeset/00-initial.xml"/>
-    <include file="/liquibase/changeset/01-translation-key.xml"/>
-    <include file="/liquibase/changeset/02-remove-configs.xml"/>
-    <include file="/liquibase/changeset/03-allow-null-passwords.xml"/>
-    <include file="/liquibase/changeset/04-change-int-to-guid.xml"/>
-    <include file="/liquibase/changeset/05-drop-unused-data.xml"/>
+    <include file="liquibase/changeset/00-initial.xml"/>
+    <include file="liquibase/changeset/01-translation-key.xml"/>
+    <include file="liquibase/changeset/02-remove-configs.xml"/>
+    <include file="liquibase/changeset/03-allow-null-passwords.xml"/>
+    <include file="liquibase/changeset/04-change-int-to-guid.xml"/>
+    <include file="liquibase/changeset/05-drop-unused-data.xml"/>
 
 </databaseChangeLog>
