@@ -29,6 +29,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +45,11 @@ import javax.servlet.ServletRegistration;
 
 @Configuration
 @ComponentScan
-@SpringBootApplication(exclude = { HibernateJpaAutoConfiguration.class, LiquibaseAutoConfiguration.class })
+@SpringBootApplication(exclude = {
+    HibernateJpaAutoConfiguration.class,
+    LiquibaseAutoConfiguration.class,
+    SecurityAutoConfiguration.class
+})
 public class Main extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
