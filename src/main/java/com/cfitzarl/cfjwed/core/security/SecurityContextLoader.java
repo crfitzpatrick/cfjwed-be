@@ -27,6 +27,7 @@ package com.cfitzarl.cfjwed.core.security;
 import com.cfitzarl.cfjwed.data.dao.AccountDao;
 import com.cfitzarl.cfjwed.data.dto.AuthenticationDTO;
 import com.cfitzarl.cfjwed.data.model.Account;
+import com.cfitzarl.cfjwed.exception.UnauthorizedException;
 import com.cfitzarl.cfjwed.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -65,9 +66,6 @@ public class SecurityContextLoader implements SecurityContextRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityContextLoader.class);
 
-    private static final String AUTH_TOKEN_HEADER = "X-Auth-Token";
-    private static final String AUTH_TOKEN_PARAM = "authToken";
-
     /**
      * This method does all the heavy work in retrieving the context out of Redis. It inspects the servlet request
      * and tries to scrape the authentication token out of a header. If the header is missing or the token is not
@@ -80,7 +78,10 @@ public class SecurityContextLoader implements SecurityContextRepository {
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         HttpServletRequest request = requestResponseHolder.getRequest();
-        String tokenParam = coalesce(request.getHeader(AUTH_TOKEN_HEADER), request.getParameter(AUTH_TOKEN_PARAM));
+        String tokenParam = coalesce(
+            request.getHeader(SessionConstant.AUTH_TOKEN_HEADER),
+            request.getParameter(SessionConstant.AUTH_TOKEN_PARAM)
+        );
 
         SecurityContext securityContext = new SecurityContextImpl();
 
@@ -102,6 +103,7 @@ public class SecurityContextLoader implements SecurityContextRepository {
 
         Collection<GrantedAuthority> gal = Collections.singletonList(new SimpleGrantedAuthority(dto.getRole()));
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(account.getId(), null, gal);
+        token.setDetails(dto.getCsrf());
 
         securityContext.setAuthentication(token);
 
@@ -118,7 +120,7 @@ public class SecurityContextLoader implements SecurityContextRepository {
      */
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
-        String tokenParam = request.getParameter(AUTH_TOKEN_HEADER);
+        String tokenParam = request.getParameter(SessionConstant.AUTH_TOKEN_HEADER);
         if ((context.getAuthentication() != null) && (tokenParam != null)) {
             redisService.expire(tokenParam, AuthenticationProcessingFilter.SESSION_EXPIRY_SECONDS);
         }
@@ -126,7 +128,7 @@ public class SecurityContextLoader implements SecurityContextRepository {
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        String tokenParam = request.getParameter(AUTH_TOKEN_HEADER);
+        String tokenParam = request.getParameter(SessionConstant.AUTH_TOKEN_HEADER);
         return (tokenParam != null) && redisService.exists(tokenParam);
     }
 

@@ -27,9 +27,12 @@ package com.cfitzarl.cfjwed;
 import com.cfitzarl.cfjwed.core.config.WebApplicationMvcConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +51,6 @@ import javax.servlet.ServletRegistration;
 @SpringBootApplication(exclude = {
     HibernateJpaAutoConfiguration.class,
     LiquibaseAutoConfiguration.class,
-    SecurityAutoConfiguration.class
 })
 public class Main extends SpringBootServletInitializer {
 

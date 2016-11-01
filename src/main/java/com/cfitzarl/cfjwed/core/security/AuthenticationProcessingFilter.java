@@ -52,6 +52,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -146,7 +147,12 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
 
                 if (accountService.hasValidCreds(account, creds)) {
                     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(account.getType().toString());
-                    return new UsernamePasswordAuthenticationToken(principal, null, Collections.singletonList(authority));
+
+                    UsernamePasswordAuthenticationToken token =
+                        new UsernamePasswordAuthenticationToken(principal, null, Collections.singletonList(authority));
+                    token.setDetails(RandomStringUtils.randomAlphanumeric(64));
+
+                    return token;
                 }
             }
 
@@ -193,6 +199,7 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
 
             // Create DTO that is returned to the browser and cached in redis
             AuthenticationDTO body = new AuthenticationDTO();
+            body.setCsrf(auth.getDetails().toString());
             body.setEmail(account.getEmail());
             body.setFirstName(account.getFirstName());
             body.setLastName(account.getLastName());
@@ -208,6 +215,12 @@ class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFil
             // Store the DTO for retrieval on subsequent requests
             redisService.set(authKey, new ObjectMapper().writeValueAsString(body));
             redisService.expire(authKey, SESSION_EXPIRY_SECONDS);
+
+            Cookie cookie = new Cookie("authToken", body.getToken());
+            cookie.setSecure(true);
+            cookie.setPath("/#/");
+
+            res.addCookie(cookie);
 
             res.setContentType("application/json");
             res.setStatus(201);

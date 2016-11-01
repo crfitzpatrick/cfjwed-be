@@ -52,7 +52,7 @@ public class SecurityContextWrapper {
         return getAuthentication().getAuthorities().iterator().next().getAuthority();
     }
 
-    private static Authentication getAuthentication() {
+    public static Authentication getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) { throw new UnauthorizedException("Unauthorized access detected"); }
         return authentication;

@@ -56,7 +56,7 @@ public class Invitation extends AbstractIdBase {
     @JoinColumn(name = "account")
     private Account account;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "invitation")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "invitation")
     private List<Attendant> attendants = new ArrayList<>();
 
     @Column

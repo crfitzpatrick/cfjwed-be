@@ -22,23 +22,16 @@
  * SOFTWARE.
  */
 
-package com.cfitzarl.cfjwed.data.dto;
-
-import lombok.Data;
-
-import java.io.Serializable;
-import java.util.UUID;
+package com.cfitzarl.cfjwed.core.security;
 
 /**
- * Data transfer object that provides authentication information to the UI.
+ * This contains keys used for authentication.
  */
-@Data
-public class AuthenticationDTO implements Serializable {
-    private String email;
-    private String csrf;
-    private String firstName;
-    private UUID invitationId;
-    private String lastName;
-    private String role;
-    private String token;
+public class SessionConstant {
+
+    private SessionConstant() { }
+
+    public static final String AUTH_TOKEN_HEADER = "X-Auth-Token";
+    public static final String AUTH_TOKEN_PARAM = "authToken";
+    public static final String CSRF_TOKEN = "X-CSRF-Token";
 }

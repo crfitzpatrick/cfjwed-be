@@ -51,6 +51,9 @@ public class SecurityConfigurationContainer extends WebSecurityConfigurerAdapter
     private AuthenticationProcessingFilter authenticationProcessingFilter;
 
     @Autowired
+    private CsrfValidatingFilter csrfValidatingFilter;
+
+    @Autowired
     private AccessDeniedEntryPointHandler pointHandler;
 
     @Autowired
@@ -59,6 +62,7 @@ public class SecurityConfigurationContainer extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(authenticationProcessingFilter, ExceptionTranslationFilter.class)
+            .addFilterAfter(csrfValidatingFilter, authenticationProcessingFilter.getClass())
             .exceptionHandling()
                 .accessDeniedHandler(pointHandler)
                 .authenticationEntryPoint(pointHandler)
@@ -72,6 +76,8 @@ public class SecurityConfigurationContainer extends WebSecurityConfigurerAdapter
             .csrf()
                 .disable()
             .authorizeRequests()
+                .antMatchers("/api/accounts/data")
+                    .permitAll()
                 .antMatchers("/api/activations/**")
                     .permitAll()
                 .antMatchers("/api/health")

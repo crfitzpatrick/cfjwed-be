@@ -25,18 +25,24 @@
 package com.cfitzarl.cfjwed.controller;
 
 import com.cfitzarl.cfjwed.core.security.SecurityContextWrapper;
+import com.cfitzarl.cfjwed.core.security.SessionConstant;
 import com.cfitzarl.cfjwed.data.dto.AccountDTO;
+import com.cfitzarl.cfjwed.data.dto.AuthenticationDTO;
 import com.cfitzarl.cfjwed.data.model.Account;
+import com.cfitzarl.cfjwed.exception.UnauthorizedException;
 import com.cfitzarl.cfjwed.service.AccountService;
+import com.cfitzarl.cfjwed.service.RedisService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
- * This contains all APIs related to adjusting {@link Account} settings.
+ * This contains all APIs related to adjusting {@link Account} settings and data.
  */
 @Controller
 @ResponseBody
@@ -48,6 +54,9 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private RedisService redisService;
 
     /**
      * This returns the current account's information.
@@ -71,5 +80,27 @@ public class AccountController {
     public void updateAccount(@Valid @RequestBody AccountDTO accountDTO) {
         accountDTO.setId(SecurityContextWrapper.getId());
         accountService.save(modelMapper.map(accountDTO, Account.class));
+    }
+
+    /**
+     * This API provides account-specific information to the UI after a page refresh.
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    public AuthenticationDTO getAuthenticationDetails(HttpServletRequest request) throws Exception {
+        String authToken = request.getHeader(SessionConstant.AUTH_TOKEN_HEADER);
+
+        if (authToken != null) {
+            String serializedAuthData = redisService.get(authToken);
+
+            if (serializedAuthData != null) {
+                return new ObjectMapper().readValue(serializedAuthData, AuthenticationDTO.class);
+            }
+        }
+
+        throw new UnauthorizedException("Could not find token");
     }
 }
